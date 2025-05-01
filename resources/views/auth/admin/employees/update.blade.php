@@ -1,0 +1,190 @@
+@extends('auth.layouts.app')
+
+@section('title')
+    Update Employee
+@endsection
+
+@php
+    $minDate = \Carbon\Carbon::now()->subYears(65)->format('Y-m-d');
+    $maxDate = \Carbon\Carbon::now()->subYears(18)->format('Y-m-d');
+@endphp
+
+
+@section('content')
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-8">
+                        <div class="main-card mb-3 card">
+                            <div class="card-body">
+                                <h5 class="card-title">Employee Update</h5>
+                                <form class="needs-validation" id="update_emp" novalidate>
+                                    <input type="hidden" name="_token" id="_token" value="{{ csrf_token() }}">
+                                    <div class="position-relative form-group">
+                                        <label for="employeeName" class="">Name
+                                        </label>
+                                        <input name="name" value="{{ $employee->name }}" id="emp_name"
+                                            class="form-control" required>
+                                        <input name="id" value="{{ $employee->id }}" id="id"
+                                            placeholder="Enter Your Name" type="hidden" class="form-control">
+                                        <div class="invalid-feedback">
+                                            Please provide a valid name.
+                                        </div>
+                                    </div>
+                                    <div class="position-relative form-group">
+                                        <label for="employeeEmail" class="">Email
+                                        </label>
+                                        <input name="email" value="{{ $employee->email }}" id="emp_email"
+                                            autocomplete="new-email" class="form-control" required>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid email.
+                                        </div>
+                                    </div>
+ <div class="position-relative form-group">
+                                        <label for="examplePassword" class="">Password
+                                        </label>
+                                        <input name="password" id="password" placeholder="Enter Your Password" value={{ $employee->password }}
+                                             type="password" class="form-control" minlength="3" maxlength="15" required>
+                                        <div class="invalid-feedback">
+                                        </div>
+                                    </div>                                    <div class="form-row">
+                                        <div class="col-md-4">
+                                            <div class="position-relative form-group">
+                                                <label for="employeeDOB" class="">Date of Birth
+                                                </label>
+                                                <input name="dob" id="emp_dob" placeholder="Enter Your Date of Birth"
+                                                    type="date" class="form-control" min="{{ $minDate }}"
+                                                    value="{{ $employee->dob }}" max="{{ $maxDate }}" required>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid date of birth.
+                                                    @error('dob')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="position-relative form-group">
+                                                <label for="employeePhone" class="">Phone
+                                                </label>
+                                                <input name="phone" id="emp_phone" placeholder="Enter Your Phone"
+                                                    type="text" class="form-control" required
+                                                    value="{{ $employee->phone }}" pattern="^\+?[0-9]{10}$"
+                                                    inputmode="numeric">
+                                                <div class="invalid-feedback">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="position-relative form-group">
+                                                <label for="employeePayRate" class="">Pay Rate
+                                                </label>
+                                                <input name="pay_rate" id="emp_pay_rate" placeholder="Enter Your Pay Rate"
+                                                    type="text" class="form-control" required
+                                                    value="{{ $employee->pay_rate }}">
+                                                <div class="invalid-feedback">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="position-relative form-group">
+                                        <label for="employeeAddress" class="">Address
+                                        </label>
+                                        <input name="address" id="emp_city" placeholder="Enter Your Address" type="text"
+                                            class="form-control no-validate" value="{{ $employee->address }}">
+                                    </div>
+                                    <div class="position-relative form-group">
+                                        <label for="exampleEmail" class="">Image</label>
+                                        <input name="image" id="emp_image" type="file" class="form-control no-validate">
+                                        <br>
+                                        <img src="{{ asset('storage') }}/{{ $employee->image }}" width="60"
+                                            alt="">
+                                        <input name="old_image" id="emp_image" type="hidden"
+                                            value="{{ $employee->image }}" class="form-control">
+                                            <div class="invalid-feedback">
+                                            </div>
+                                    </div>
+                                    <div class="position-relative form-check"><label class="form-check-label">
+
+                                            @if ($employee->status == 'Active')
+                                                <input type="checkbox" name="status" id="status" value="Active"
+                                                    class="form-check-input" checked>
+                                            @else
+                                                <input type="checkbox" name="status" id="status" value="Inactive"
+                                                    class="form-check-input">
+                                            @endif
+                                            Active
+                                        </label>
+                                    </div>
+                                    </br>
+
+                                    <button type="submit" class="mt-1 btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('footer')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const phoneInput = document.getElementById("emp_phone");
+            const payRateInput = document.getElementById("emp_pay_rate");
+            const dobInput = document.getElementById("emp_dob");
+
+            // Add input event listeners to format the phone number and pay rate
+            phoneInput.addEventListener("input", function() {
+                // Keep only digits and limit to 10 characters
+                this.value = this.value.replace(/\D/g, '').substring(0, 10);
+            });
+
+            payRateInput.addEventListener("input", function() {
+                // Keep only digits and limit to 10 characters
+                this.value = this.value.replace(/\D/g, '').substring(0, 2);
+            });
+
+        });
+        $("#update_emp").submit(function(e) {
+            e.preventDefault();
+            const formdata = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('admin.employee.update') }}',
+                data: formdata,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: (data) => {
+                    if (data.success == true) {
+                        alert(data.message);
+                        window.location.href = '/employee/list';
+                    } else {
+                        alert(data.message.join("\n")); // Fix: Join array into a readable string
+                    }
+                },
+                error: function (xhr) {
+                // Clear previous success and error styles
+
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (field, messages) {
+                        let input = $(`[name="${field}"]`);
+                        input.addClass('is-invalid'); // Add error (red) style
+                        input.closest('.form-group').find('.invalid-feedback').text(messages[0]); // Display error message
+                    });
+                } else {
+                    alert("Something went wrong!");
+                }
+            }
+            })
+
+        })
+    </script>
+@endsection
